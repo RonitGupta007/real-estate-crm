@@ -117,7 +117,7 @@ export default function PipelinePage() {
           Loading deal pipeline...
         </div>
       ) : (
-        <div className="flex gap-4 overflow-x-auto pb-6 min-h-[720px] items-start">
+        <div className="flex gap-4 overflow-x-auto pb-6 min-h-[600px] items-start snap-x snap-mandatory scroll-smooth">
           {STAGES.map((stage) => {
             const stageDeals = deals.filter((d) => d.stage === stage.id);
             const stageTotal = stageDeals.reduce((acc, d) => acc + (d.dealValue || 0), 0);
@@ -125,7 +125,7 @@ export default function PipelinePage() {
             return (
               <div
                 key={stage.id}
-                className="w-80 flex-shrink-0 bg-slate-100/70 rounded-2xl border border-slate-200/90 flex flex-col max-h-[800px]"
+                className="w-[85vw] sm:w-80 flex-shrink-0 bg-slate-100/70 rounded-2xl border border-slate-200/90 flex flex-col max-h-[800px] snap-start"
               >
                 {/* Stage Header */}
                 <div

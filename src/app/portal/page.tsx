@@ -255,7 +255,7 @@ export default function ClientPortalPage() {
       </header>
 
       {/* Main Unified Content Area */}
-      <main className="flex-1 max-w-6xl w-full mx-auto p-6 space-y-6">
+      <main className="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 space-y-5 sm:space-y-6">
         {loading ? (
           <div className="py-32 text-center text-xs text-slate-500">
             <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>

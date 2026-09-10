@@ -12,13 +12,20 @@ import {
   Sparkles,
   ChevronRight,
   ShieldCheck,
+  X,
 } from "lucide-react";
 
 interface SidebarProps {
   onOpenNewModal?: (type: "property" | "lead" | "deal" | "showing") => void;
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
-export default function Sidebar({ onOpenNewModal }: SidebarProps) {
+export default function Sidebar({
+  onOpenNewModal,
+  isMobileOpen = false,
+  onCloseMobile,
+}: SidebarProps) {
   const pathname = usePathname();
 
   const navigation = [
@@ -32,11 +39,15 @@ export default function Sidebar({ onOpenNewModal }: SidebarProps) {
     { name: "VIP Client Portal", href: "/portal", icon: ShieldCheck, badge: "VIP" },
   ];
 
-  return (
-    <aside className="w-64 bg-slate-900 text-slate-200 flex flex-col flex-shrink-0 border-r border-slate-800 select-none">
+  const sidebarContent = (
+    <div className="w-72 md:w-64 bg-slate-900 text-slate-200 flex flex-col h-full border-r border-slate-800 select-none shadow-2xl md:shadow-none">
       {/* Brand Header */}
       <div className="h-16 px-6 flex items-center justify-between border-b border-slate-800">
-        <Link href="/" className="flex items-center gap-2.5 group">
+        <Link
+          href="/"
+          onClick={onCloseMobile}
+          className="flex items-center gap-2.5 group"
+        >
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-amber-500/20">
             <Sparkles className="w-5 h-5 text-slate-950" />
           </div>
@@ -49,10 +60,18 @@ export default function Sidebar({ onOpenNewModal }: SidebarProps) {
             </span>
           </div>
         </Link>
+
+        {/* Mobile Close Button */}
+        <button
+          onClick={onCloseMobile}
+          className="md:hidden p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+        >
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Main Nav links */}
-      <div className="flex-1 py-6 px-3 space-y-1.5 overflow-y-auto">
+      <div className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
         <div className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
           Core Brokerage
         </div>
@@ -67,6 +86,7 @@ export default function Sidebar({ onOpenNewModal }: SidebarProps) {
             <Link
               key={item.name}
               href={item.href}
+              onClick={onCloseMobile}
               className={`flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 isActive
                   ? "bg-amber-500 text-slate-950 font-semibold shadow-md shadow-amber-500/20"
@@ -94,30 +114,42 @@ export default function Sidebar({ onOpenNewModal }: SidebarProps) {
         })}
 
         {/* Quick Actions in Sidebar */}
-        <div className="pt-6 px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+        <div className="pt-5 px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
           Quick Actions
         </div>
         <div className="space-y-1 px-1">
           <button
-            onClick={() => onOpenNewModal?.("lead")}
+            onClick={() => {
+              onCloseMobile?.();
+              onOpenNewModal?.("lead");
+            }}
             className="w-full text-left px-3 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-amber-400 rounded-md transition flex items-center justify-between"
           >
             <span>+ New Lead / Client</span>
           </button>
           <button
-            onClick={() => onOpenNewModal?.("property")}
+            onClick={() => {
+              onCloseMobile?.();
+              onOpenNewModal?.("property");
+            }}
             className="w-full text-left px-3 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-amber-400 rounded-md transition flex items-center justify-between"
           >
             <span>+ New Listing</span>
           </button>
           <button
-            onClick={() => onOpenNewModal?.("deal")}
+            onClick={() => {
+              onCloseMobile?.();
+              onOpenNewModal?.("deal");
+            }}
             className="w-full text-left px-3 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-amber-400 rounded-md transition flex items-center justify-between"
           >
             <span>+ New Pipeline Deal</span>
           </button>
           <button
-            onClick={() => onOpenNewModal?.("showing")}
+            onClick={() => {
+              onCloseMobile?.();
+              onOpenNewModal?.("showing");
+            }}
             className="w-full text-left px-3 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-amber-400 rounded-md transition flex items-center justify-between"
           >
             <span>+ Book Showing</span>
@@ -145,6 +177,28 @@ export default function Sidebar({ onOpenNewModal }: SidebarProps) {
           </div>
         </div>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Desktop Persistent Sidebar */}
+      <aside className="hidden md:flex md:w-64 flex-shrink-0 h-full">
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile Slide-Over Drawer with Backdrop */}
+      {isMobileOpen && (
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          <div
+            className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity animate-in fade-in"
+            onClick={onCloseMobile}
+          />
+          <div className="relative z-50 animate-in slide-in-from-left duration-200 h-full">
+            {sidebarContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
