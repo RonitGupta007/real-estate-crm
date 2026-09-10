@@ -1,0 +1,187 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Property {
+  id              String      @id @default(cuid())
+  title           String
+  slug            String      @unique
+  address         String
+  city            String
+  state           String
+  zipCode         String
+  country         String      @default("USA")
+  price           Float
+  propertyType    String      // SINGLE_FAMILY, CONDO, TOWNHOUSE, COMMERCIAL, LUXURY_ESTATE, MULTI_FAMILY
+  status          String      @default("ACTIVE") // ACTIVE, PENDING, UNDER_CONTRACT, SOLD, OFF_MARKET
+  listingType     String      @default("FOR_SALE") // FOR_SALE, FOR_RENT
+  bedrooms        Int
+  bathrooms       Float
+  squareFeet      Int
+  yearBuilt       Int?
+  lotSize         String?
+  description     String
+  images          String      // JSON array of image URLs
+  featuredImage   String
+  features        String      // JSON array of amenity tags: Pool, Garage, etc.
+  hoaFees         Float?
+  pricePerSqFt    Float?
+  assignedAgent   String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  deals           Deal[]
+  showings        Showing[]
+  activities      Activity[]
+  interestedLeads LeadPropertyInterest[]
+  followUps       FollowUp[]
+  documents       Document[]
+}
+
+model Lead {
+  id                String      @id @default(cuid())
+  firstName         String
+  lastName          String
+  email             String      @unique
+  phone             String
+  type              String      @default("BUYER") // BUYER, SELLER, INVESTOR, AGENT, RENTER
+  status            String      @default("NEW") // NEW, CONTACTED, QUALIFIED, SHOWING, NEGOTIATING, WON, LOST
+  source            String      @default("WEBSITE") // WEBSITE, ZILLOW, REALTOR, REFERRAL, OPEN_HOUSE, SOCIAL_MEDIA
+  budgetMin         Float?
+  budgetMax         Float?
+  preferredLocation String?
+  preferredType     String?
+  priority          String      @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  notes             String?
+  assignedAgent     String      @default("Sarah Jenkins")
+  lastContactedAt   DateTime?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  deals             Deal[]
+  showings          Showing[]
+  activities        Activity[]
+  properties        LeadPropertyInterest[]
+  followUps         FollowUp[]
+  documents         Document[]
+}
+
+model LeadPropertyInterest {
+  id          String   @id @default(cuid())
+  leadId      String
+  propertyId  String
+  interest    String   @default("INTERESTED") // FAVORITE, VIEWED, OFFER_MADE
+  createdAt   DateTime @default(now())
+
+  lead        Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@unique([leadId, propertyId])
+}
+
+model Deal {
+  id                 String    @id @default(cuid())
+  title              String
+  stage              String    @default("DISCOVERY") // DISCOVERY, SHOWING, OFFER_SUBMITTED, UNDER_CONTRACT, CLOSING, CLOSED_WON, CLOSED_LOST
+  dealValue          Float
+  expectedCommission Float
+  commissionRate     Float     @default(3.0)
+  closeDate          DateTime?
+  probability        Int       @default(50) // 0 - 100
+  notes              String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  leadId             String?
+  lead               Lead?     @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  propertyId         String?
+  property           Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+
+  activities         Activity[]
+  followUps          FollowUp[]
+  documents          Document[]
+}
+
+model Showing {
+  id          String   @id @default(cuid())
+  title       String
+  type        String   @default("PROPERTY_VIEWING") // PROPERTY_VIEWING, OPEN_HOUSE, CLIENT_MEETING, INSPECTION, CLOSING
+  startTime   DateTime
+  endTime     DateTime
+  status      String   @default("SCHEDULED") // SCHEDULED, CONFIRMED, COMPLETED, CANCELLED
+  location    String?
+  notes       String?
+  feedback    String?
+  agentName   String   @default("Sarah Jenkins")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  leadId      String?
+  lead        Lead?    @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  propertyId  String?
+  property    Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  type        String   @default("NOTE") // NOTE, CALL, EMAIL, MEETING, STAGE_CHANGE, SHOWING
+  title       String
+  description String
+  createdAt   DateTime @default(now())
+
+  leadId      String?
+  lead        Lead?    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  propertyId  String?
+  property    Property? @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  dealId      String?
+  deal        Deal?    @relation(fields: [dealId], references: [id], onDelete: Cascade)
+}
+
+model FollowUp {
+  id               String    @id @default(cuid())
+  type             String    // POST_SHOWING, STALE_LEAD, NEW_MATCH, OFFER_CHECKIN, MILESTONE
+  urgency          String    @default("HIGH") // URGENT, HIGH, MEDIUM, LOW
+  reason           String
+  suggestedChannel String    @default("EMAIL") // EMAIL, SMS, CALL_SCRIPT
+  draftSubject     String?
+  draftContent     String
+  status           String    @default("PENDING") // PENDING, SENT, DISMISSED
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  leadId           String
+  lead             Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  propertyId       String?
+  property         Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+
+  dealId           String?
+  deal             Deal?     @relation(fields: [dealId], references: [id], onDelete: SetNull)
+}
+
+model Document {
+  id          String    @id @default(cuid())
+  title       String
+  category    String    // CONTRACT, TITLE, INSPECTION, HOA, WIRE, FLOORPLAN
+  fileSize    String    @default("2.4 MB")
+  fileUrl     String    @default("#")
+  createdAt   DateTime  @default(now())
+
+  leadId      String?
+  lead        Lead?     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  propertyId  String?
+  property    Property? @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  dealId      String?
+  deal        Deal?     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+}
