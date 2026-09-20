@@ -19,13 +19,13 @@ export default function NewShowingModal({
   const [properties, setProperties] = useState<any[]>([]);
 
   const [formData, setFormData] = useState({
-    title: "Private Property Showing",
+    title: "VIP Site Visit & Walkthrough",
     type: "PROPERTY_VIEWING",
     startTime: "",
     endTime: "",
     status: "SCHEDULED",
     location: "",
-    agentName: "Sarah Jenkins",
+    agentName: "Priya Sharma",
     leadId: "",
     propertyId: "",
     notes: "",
@@ -119,11 +119,11 @@ export default function NewShowingModal({
                 onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none"
               >
-                <option value="PROPERTY_VIEWING">Property Viewing / Tour</option>
-                <option value="OPEN_HOUSE">Open House</option>
-                <option value="CLIENT_MEETING">Client Meeting</option>
-                <option value="INSPECTION">Property Inspection</option>
-                <option value="CLOSING">Closing Signing</option>
+                <option value="PROPERTY_VIEWING">Site Visit & Property Tour</option>
+                <option value="OPEN_HOUSE">Developer Showcase / Open House</option>
+                <option value="CLIENT_MEETING">Client Consultation & Vastu Review</option>
+                <option value="INSPECTION">Structural & Technical Inspection</option>
+                <option value="CLOSING">Sub-Registrar Registration Signing</option>
               </select>
             </div>
 
@@ -134,9 +134,9 @@ export default function NewShowingModal({
                 onChange={(e) => setFormData({ ...formData, agentName: e.target.value })}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none"
               >
-                <option value="Sarah Jenkins">Sarah Jenkins</option>
-                <option value="Michael Vance">Michael Vance</option>
-                <option value="Elena Rostova">Elena Rostova</option>
+                <option value="Priya Sharma">Priya Sharma</option>
+                <option value="Vikram Malhotra">Vikram Malhotra</option>
+                <option value="Rajesh Verma">Rajesh Verma</option>
               </select>
             </div>
           </div>
@@ -209,7 +209,7 @@ export default function NewShowingModal({
             <label className="font-semibold text-slate-700">Location / Meeting Address</label>
             <input
               type="text"
-              placeholder="e.g. 1048 Stradella Rd, Bel Air"
+              placeholder="e.g. Worli Sea Face, Tower A Lobby, Mumbai"
               value={formData.location}
               onChange={(e) => setFormData({ ...formData, location: e.target.value })}
               className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none"
@@ -220,7 +220,7 @@ export default function NewShowingModal({
             <label className="font-semibold text-slate-700">Notes & Key Points</label>
             <textarea
               rows={2}
-              placeholder="Security gate code, lockbox instructions, specific interests..."
+              placeholder="Security clearance pass, builder site contact, specific Vastu queries..."
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none"

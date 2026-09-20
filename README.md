@@ -1,4 +1,4 @@
-# ESTATIQ — Luxury Real Estate CRM
+# EstateInt — Luxury Real Estate CRM
 
 An enterprise-grade Customer Relationship Management (CRM) and Deal Pipeline application engineered specifically for luxury real estate brokerages, managing agents, and multi-agent teams.
 

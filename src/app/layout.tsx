@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ESTATIQ | Luxury Real Estate CRM",
+  title: "EstateInt | Luxury Real Estate CRM",
   description: "Enterprise Real Estate Brokerage CRM & Pipeline Management System",
 };
 

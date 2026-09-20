@@ -142,29 +142,29 @@ export default function ClientPortalPage() {
   const client = portalData?.client;
   const activeDeal = portalData?.activeDeals?.[0];
 
-  // Simplified 4-step deal tracker
+  // Simplified 4-step Indian transaction roadmap
   const dealSteps = [
     {
-      title: "Offer Accepted",
-      subtitle: "Contract signed & escrow opened",
+      title: "Token & Booking (Bayana)",
+      subtitle: "Unit blocked & advance KYC receipt issued",
       isComplete: ["OFFER_SUBMITTED", "UNDER_CONTRACT", "CLOSING", "CLOSED_WON"].includes(activeDeal?.stage),
       isCurrent: activeDeal?.stage === "OFFER_SUBMITTED",
     },
     {
-      title: "Escrow & Inspections",
-      subtitle: "Due diligence & wire deposit",
+      title: "BBA & Bank Loan Sanction",
+      subtitle: "Builder-Buyer Agreement signed & loan sanctioned",
       isComplete: ["UNDER_CONTRACT", "CLOSING", "CLOSED_WON"].includes(activeDeal?.stage),
       isCurrent: activeDeal?.stage === "UNDER_CONTRACT",
     },
     {
-      title: "Appraisal & Approvals",
-      subtitle: "Underwriting conditions cleared",
+      title: "Stamp Duty & Registry",
+      subtitle: "Challan paid & Sub-Registrar deed registered",
       isComplete: ["CLOSING", "CLOSED_WON"].includes(activeDeal?.stage),
       isCurrent: activeDeal?.stage === "CLOSING",
     },
     {
-      title: "Closing & Key Handover",
-      subtitle: "Deed recorded & ownership transferred",
+      title: "Possession & Khata Transfer",
+      subtitle: "OC obtained, keys handed over & Khata updated",
       isComplete: activeDeal?.stage === "CLOSED_WON",
       isCurrent: false,
     },
@@ -207,9 +207,9 @@ export default function ClientPortalPage() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-base tracking-tight text-white">ESTATIQ</span>
+                <span className="font-bold text-base tracking-tight text-white">EstateInt</span>
                 <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold">
-                  Private Client Vault
+                  Private Client Vault • India
                 </span>
               </div>
               <p className="text-xs text-slate-400">
@@ -223,27 +223,34 @@ export default function ClientPortalPage() {
 
           {/* Broker Contact Card */}
           <div className="flex items-center gap-3 bg-slate-900 px-3.5 py-2 rounded-xl border border-slate-800 text-xs">
-            <img
-              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&h=120&q=80"
-              alt="Sarah Jenkins"
-              className="w-8 h-8 rounded-full object-cover border border-amber-500/40"
-            />
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 font-bold flex items-center justify-center text-xs shadow-xs">
+              PS
+            </div>
             <div>
               <p className="font-bold text-white text-xs">
-                {client?.assignedAgent || "Sarah Jenkins"}
+                {client?.assignedAgent || "Priya Sharma"}
               </p>
               <p className="text-[10px] text-slate-400">Managing Principal Broker</p>
             </div>
             <div className="flex items-center gap-1.5 ml-2 border-l border-slate-800 pl-3">
               <a
-                href="tel:+13105550182"
+                href="https://wa.me/919820044120"
+                target="_blank"
+                rel="noreferrer"
+                className="p-1.5 bg-emerald-950 hover:bg-emerald-900 text-emerald-400 border border-emerald-800/60 rounded-lg transition"
+                title="WhatsApp Broker"
+              >
+                <MessageSquare className="w-3 h-3" />
+              </a>
+              <a
+                href="tel:+919820044120"
                 className="p-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded-lg transition"
                 title="Call Broker"
               >
                 <Phone className="w-3 h-3" />
               </a>
               <a
-                href="mailto:sarah@estatiq.com"
+                href="mailto:priya@estateint.in"
                 className="p-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded-lg transition"
                 title="Email Broker"
               >
@@ -283,16 +290,28 @@ export default function ClientPortalPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
                   <div>
                     <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400">
-                      Active Transaction Tracker
+                      Active Transaction Roadmap
                     </span>
                     <h2 className="text-xl font-bold text-white mt-0.5">
                       {activeDeal.title}
                     </h2>
                     {activeDeal.property && (
-                      <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
-                        <MapPin className="w-3 h-3 text-amber-500" />
-                        {activeDeal.property.address}, {activeDeal.property.city}
-                      </p>
+                      <div className="flex items-center gap-2 flex-wrap text-xs text-slate-400 mt-1">
+                        <p className="flex items-center gap-1">
+                          <MapPin className="w-3 h-3 text-amber-500" />
+                          {activeDeal.property.address}, {activeDeal.property.city}
+                        </p>
+                        {activeDeal.property.reraId && (
+                          <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30 font-semibold">
+                            {activeDeal.property.reraId}
+                          </span>
+                        )}
+                        {activeDeal.property.facingDirection && (
+                          <span className="text-[10px] text-emerald-400 font-medium">
+                            • {activeDeal.property.facingDirection}
+                          </span>
+                        )}
+                      </div>
                     )}
                   </div>
                   <div className="text-left sm:text-right">
@@ -407,11 +426,18 @@ export default function ClientPortalPage() {
                           <div className="text-xs">
                             <h4 className="font-bold text-white leading-snug">{prop.title}</h4>
                             <p className="text-[11px] text-slate-400 mt-0.5">
-                              {prop.city}, {prop.state} • {prop.bedrooms} beds • {prop.bathrooms} baths
+                              {prop.city}, {prop.state} • {prop.bhkConfig || `${prop.bedrooms} BHK`} • {prop.squareFeet ? `${prop.squareFeet.toLocaleString()} sq.ft` : ""}
                             </p>
-                            <p className="text-xs font-bold text-amber-400 mt-1">
-                              {formatCurrency(prop.price)}
-                            </p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-xs font-bold text-amber-400">
+                                {formatCurrency(prop.price)}
+                              </span>
+                              {prop.reraId && (
+                                <span className="text-[9px] px-1.5 py-0.5 bg-slate-900 border border-slate-700 text-amber-300/80 rounded font-medium">
+                                  RERA Approved
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
 
@@ -478,7 +504,7 @@ export default function ClientPortalPage() {
                       Message Your Broker
                     </h3>
                     <p className="text-[11px] text-slate-400 mt-0.5">
-                      Direct line to Sarah Jenkins.
+                      Direct line to Priya Sharma.
                     </p>
                   </div>
 

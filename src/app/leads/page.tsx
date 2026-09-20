@@ -295,7 +295,7 @@ export default function LeadsPage() {
                         {lead.budgetMin || lead.budgetMax ? (
                           <div>
                             <span className="font-semibold text-slate-800">
-                              {lead.budgetMin ? formatCurrency(lead.budgetMin) : "$0"} -{" "}
+                              {lead.budgetMin ? formatCurrency(lead.budgetMin) : "₹0"} -{" "}
                               {lead.budgetMax ? formatCurrency(lead.budgetMax) : "No limit"}
                             </span>
                             <span className="block text-[10px] text-slate-400">

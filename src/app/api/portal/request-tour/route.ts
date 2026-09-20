@@ -38,7 +38,7 @@ export async function POST(request: Request) {
         endTime,
         status: "SCHEDULED",
         location: `${property.address}, ${property.city}`,
-        agentName: client.assignedAgent || "Sarah Jenkins",
+        agentName: client.assignedAgent || "Priya Sharma",
         leadId: client.id,
         propertyId: property.id,
         notes: notes || "Requested by client via VIP Client Portal.",

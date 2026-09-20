@@ -52,30 +52,36 @@ export async function runAutonomousFollowUpAudit(): Promise<number> {
           propertyId: showing.property.id,
           type: "POST_SHOWING",
           urgency: "URGENT",
-          reason: `Walkthrough of ${showing.property.title} conducted. Prime 24-48h window to address questions on square footage, architectural finishes, and gauge buyer offer intent.`,
-          suggestedChannel: "EMAIL",
-          draftSubject: `Following up on your tour of ${showing.property.title}`,
-          draftContent: `Hi ${showing.lead.firstName},\n\nIt was a pleasure touring ${showing.property.title} with you. The natural light and bespoke architectural details on this property are truly distinctive.\n\nI wanted to check in to see what thoughts you and your team had after sleeping on it. The seller is currently scheduling two other private walkthroughs for this weekend, so if you have any questions regarding the disclosures, HOA documents, or offer terms, let's connect this afternoon.\n\nBest regards,\nSarah Jenkins\nManaging Principal Broker`,
+          reason: `Site visit of ${showing.property.title} conducted. Prime 24-48h window to share RERA sanctioned layout, car parking allotment confirmation, and discuss token advance booking terms.`,
+          suggestedChannel: "SMS", // WhatsApp is default preferred
+          draftSubject: `Follow-up: Site visit of ${showing.property.title}`,
+          draftContent: `Namaste ${showing.lead.firstName},\n\nIt was a pleasure touring ${showing.property.title} with you yesterday. The Vastu orientation, natural light, and finishes are truly exceptional.\n\nI have attached the verified RERA approved layout and society bylaws for your review. The developer has two other serious inquiries scheduled for this weekend. If you would like to block the unit with an initial token advance or discuss payment milestones, let me know when we can speak today.\n\nWarm regards,\nPriya Sharma\nManaging Principal Broker, EstateInt India`,
         });
       }
     }
   }
 
-  // Check 2: Stale High-Priority Leads (no contact in 48h)
+  // Check 2: Stale High-Priority Leads (no contact in 40h)
   for (const lead of leads) {
     const hoursSinceContact = lead.lastContactedAt
       ? (Date.now() - new Date(lead.lastContactedAt).getTime()) / (1000 * 60 * 60)
       : 999;
 
     if (hoursSinceContact > 40 && (lead.priority === "URGENT" || lead.priority === "HIGH")) {
+      const budgetDisplay = lead.budgetMax
+        ? lead.budgetMax >= 10000000
+          ? `₹${(lead.budgetMax / 10000000).toFixed(1)} Cr`
+          : `₹${(lead.budgetMax / 100000).toFixed(0)} L`
+        : "";
+
       followUpItems.push({
         leadId: lead.id,
         type: "STALE_LEAD",
         urgency: lead.priority === "URGENT" ? "URGENT" : "HIGH",
-        reason: `High-value ${lead.type.toLowerCase()} inactive for ${Math.round(hoursSinceContact)} hours. Inquiring on budget $${((lead.budgetMax || 0) / 1000000).toFixed(1)}M. Re-engagement needed to maintain deal momentum.`,
+        reason: `High-net-worth client inactive for ${Math.round(hoursSinceContact)} hours. Budget target: ${budgetDisplay || "Luxury segment"}. Re-engagement via WhatsApp recommended before weekend showings.`,
         suggestedChannel: "SMS",
-        draftSubject: `Quick check-in regarding ${lead.preferredLocation || "your property search"}`,
-        draftContent: `Hi ${lead.firstName}, Sarah here from Estatiq. I have two off-market opportunities coming up in ${lead.preferredLocation || "your target area"} that match your ${lead.budgetMax ? `$${(lead.budgetMax / 1000000).toFixed(1)}M` : ""} criteria. Do you have 5 minutes for a quick call today?`,
+        draftSubject: `Off-market luxury update for ${lead.preferredLocation || "your property search"}`,
+        draftContent: `Namaste ${lead.firstName}, Priya here from EstateInt. I have two rare off-market residences coming up in ${lead.preferredLocation || "your target neighborhood"} that match your ${budgetDisplay ? `${budgetDisplay}` : "luxury"} criteria and Vastu preferences. Are you free for a quick 5-minute call today?`,
       });
     }
   }
@@ -83,16 +89,20 @@ export async function runAutonomousFollowUpAudit(): Promise<number> {
   // Check 3: Active Offer Follow-up
   for (const deal of deals) {
     if (deal.stage === "OFFER_SUBMITTED" && deal.lead && deal.property) {
+      const dealValueFormatted = deal.dealValue >= 10000000
+        ? `₹${(deal.dealValue / 10000000).toFixed(2)} Cr`
+        : `₹${(deal.dealValue / 100000).toFixed(0)} L`;
+
       followUpItems.push({
         leadId: deal.lead.id,
         propertyId: deal.property.id,
         dealId: deal.id,
         type: "OFFER_CHECKIN",
         urgency: "URGENT",
-        reason: `Formal offer of $${deal.dealValue.toLocaleString()} submitted on ${deal.property.title}. Broker check-in required regarding counter-terms and earnest money escrow timeline.`,
+        reason: `Formal offer of ${dealValueFormatted} submitted on ${deal.property.title}. Follow-up needed with seller/builder on Bayana agreement and stamp duty timeline.`,
         suggestedChannel: "CALL_SCRIPT",
         draftSubject: `Update: Seller response on ${deal.property.title}`,
-        draftContent: `[Agent Phone Script]\n1. Call ${deal.lead.firstName} ${deal.lead.lastName} at ${deal.lead.phone}.\n2. "Hi ${deal.lead.firstName}, I just spoke with the listing broker for ${deal.property.title}. They received our offer and the seller was impressed with the clean 21-day escrow terms."\n3. "There is a slight counter on the closing timeline regarding the primary suite staging furnishings. Let's review the two options so we keep our position locked in."`,
+        draftContent: `[Broker Phone Guidance Script]\n1. Call ${deal.lead.firstName} ${deal.lead.lastName} at ${deal.lead.phone}.\n2. "Namaste ${deal.lead.firstName}, I just had a detailed discussion with the seller's representatives for ${deal.property.title}. They received our offer of ${dealValueFormatted} and appreciated the clean 30-day payment schedule."\n3. "They have agreed to include the 4 reserved car parking slots and club lifetime membership in the base price. Let's schedule the token agreement signing so we lock this in before their price revision next week."`,
       });
     }
   }
@@ -107,15 +117,19 @@ export async function runAutonomousFollowUpAudit(): Promise<number> {
       );
 
       if (match) {
+        const matchPriceFormatted = match.price >= 10000000
+          ? `₹${(match.price / 10000000).toFixed(2)} Cr`
+          : `₹${(match.price / 100000).toFixed(0)} L`;
+
         followUpItems.push({
           leadId: lead.id,
           propertyId: match.id,
           type: "NEW_MATCH",
           urgency: "MEDIUM",
-          reason: `Prime match detected: ${match.title} ($${match.price.toLocaleString()}) fits ${lead.firstName}'s preference for ${lead.preferredType.replace(/_/g, " ")}.`,
+          reason: `Prime inventory match: ${match.title} (${matchPriceFormatted}) in ${match.city} directly aligns with ${lead.firstName}'s preference for ${match.bhkConfig || match.propertyType.replace(/_/g, " ")}.`,
           suggestedChannel: "EMAIL",
-          draftSubject: `Curated Match: ${match.title} in ${match.city}`,
-          draftContent: `Hi ${lead.firstName},\n\nA premier new listing just went live that aligns closely with your criteria: ${match.title} in ${match.city} ($${match.price.toLocaleString()}).\n\nIt features ${match.bedrooms} beds, ${match.bathrooms} baths, ${match.squareFeet.toLocaleString()} sqft, and luxury amenities including ${match.features ? JSON.parse(match.features).slice(0, 3).join(", ") : "premium finishes"}.\n\nWould you like me to reserve a private VIP walkthrough before public open houses this weekend?`,
+          draftSubject: `Curated Match: ${match.title}, ${match.city} (${matchPriceFormatted})`,
+          draftContent: `Namaste ${lead.firstName},\n\nA premier new luxury property just became available that perfectly fits your parameters:\n\nProperty: ${match.title}\nLocation: ${match.address}, ${match.city}\nPrice: ${matchPriceFormatted}\nSpecs: ${match.bedrooms} BHK • ${match.bathrooms} Baths • ${match.squareFeet.toLocaleString()} sq.ft (RERA Carpet Area)\nVastu / Facing: ${match.facingDirection || "Vastu Compliant"}\nRERA ID: ${match.reraId || "Verified"}\n\nWould you like me to coordinate a private preview visit for you and your family this week?`,
         });
       }
     }

@@ -81,7 +81,7 @@ export async function POST(request: Request) {
       featuredImage,
       images,
       features,
-      assignedAgent = "Sarah Jenkins",
+      assignedAgent = "Priya Sharma",
     } = body;
 
     if (!title || !address || !city || !state || !price) {
@@ -145,7 +145,7 @@ export async function POST(request: Request) {
       data: {
         type: "NOTE",
         title: "New Property Listed",
-        description: `New listing '${property.title}' added with price $${property.price.toLocaleString()}.`,
+        description: `New listing '${property.title}' added with price ₹${property.price.toLocaleString("en-IN")}.`,
         propertyId: property.id,
       },
     });

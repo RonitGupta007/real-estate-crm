@@ -21,10 +21,10 @@ export default function AnalyticsPage() {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // Commission Simulator state
-  const [calcPrice, setCalcPrice] = useState(4500000);
-  const [calcRate, setCalcRate] = useState(3.0);
-  const [calcSplit, setCalcSplit] = useState(80); // 80/20 broker split
+  // Commission Simulator state (Indian market: ₹2.5 Cr default, 2% standard brokerage)
+  const [calcPrice, setCalcPrice] = useState(25000000); // ₹2.5 Cr
+  const [calcRate, setCalcRate] = useState(2.0); // 2% standard brokerage
+  const [calcSplit, setCalcSplit] = useState(70); // 70/30 broker split
 
   useEffect(() => {
     async function loadStats() {
@@ -58,26 +58,26 @@ export default function AnalyticsPage() {
 
   const agents = [
     {
-      name: "Sarah Jenkins",
-      role: "Managing Principal Broker",
-      volume: 15650000,
-      earned: 469500,
-      activeDeals: 3,
+      name: "Priya Sharma",
+      role: "Managing Principal Broker (Mumbai & BLR)",
+      volume: 785000000, // ₹78.5 Cr
+      earned: 15700000, // ₹1.57 Cr
+      activeDeals: 4,
       avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&h=120&q=80",
     },
     {
-      name: "Michael Vance",
-      role: "Associate Partner",
-      volume: 6825000,
-      earned: 204750,
-      activeDeals: 2,
+      name: "Vikram Malhotra",
+      role: "Partner (Delhi NCR & Gurgaon)",
+      volume: 512000000, // ₹51.2 Cr
+      earned: 10240000, // ₹1.02 Cr
+      activeDeals: 3,
       avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=120&h=120&q=80",
     },
     {
-      name: "Elena Rostova",
-      role: "Luxury Estate Specialist",
-      volume: 7350000,
-      earned: 194500,
+      name: "Rajesh Verma",
+      role: "Luxury Estate Specialist (Hyderabad & Pune)",
+      volume: 363000000, // ₹36.3 Cr
+      earned: 7260000, // ₹72.6 L
       activeDeals: 2,
       avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&h=120&q=80",
     },
@@ -258,9 +258,9 @@ export default function AnalyticsPage() {
               </div>
               <input
                 type="range"
-                min="500000"
-                max="15000000"
-                step="250000"
+                min="5000000"
+                max="500000000"
+                step="2500000"
                 value={calcPrice}
                 onChange={(e) => setCalcPrice(Number(e.target.value))}
                 className="w-full accent-amber-500"

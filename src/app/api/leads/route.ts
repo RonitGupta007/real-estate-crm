@@ -76,7 +76,7 @@ export async function POST(request: Request) {
       preferredType,
       priority = "MEDIUM",
       notes,
-      assignedAgent = "Sarah Jenkins",
+      assignedAgent = "Priya Sharma",
     } = body;
 
     if (!firstName || !lastName || !email || !phone) {

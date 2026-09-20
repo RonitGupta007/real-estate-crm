@@ -99,7 +99,7 @@ export async function POST(request: Request) {
       data: {
         type: "NOTE",
         title: "Deal Created",
-        description: `New deal '${deal.title}' initialized at stage ${deal.stage} ($${deal.dealValue.toLocaleString()}).`,
+        description: `New deal '${deal.title}' initialized at stage ${deal.stage} (₹${deal.dealValue.toLocaleString("en-IN")}).`,
         dealId: deal.id,
         leadId: deal.leadId || undefined,
         propertyId: deal.propertyId || undefined,

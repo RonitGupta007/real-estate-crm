@@ -19,16 +19,16 @@ export default function NewLeadModal({
     firstName: "",
     lastName: "",
     email: "",
-    phone: "",
+    phone: "+91 ",
     type: "BUYER",
     status: "NEW",
-    source: "WEBSITE",
-    budgetMin: "1500000",
-    budgetMax: "3000000",
-    preferredLocation: "Los Angeles / Beverly Hills",
-    preferredType: "LUXURY_ESTATE",
+    source: "MAGICBRICKS",
+    budgetMin: "15000000",
+    budgetMax: "30000000",
+    preferredLocation: "Worli Sea Face / Bandra West, Mumbai",
+    preferredType: "APARTMENT_4BHK",
     priority: "HIGH",
-    assignedAgent: "Sarah Jenkins",
+    assignedAgent: "Priya Sharma",
     notes: "",
   });
 
@@ -119,11 +119,11 @@ export default function NewLeadModal({
               />
             </div>
             <div className="space-y-1">
-              <label className="font-semibold text-slate-700">Phone Number *</label>
+              <label className="font-semibold text-slate-700">Phone / WhatsApp Number *</label>
               <input
                 type="tel"
                 required
-                placeholder="+1 (555) 000-0000"
+                placeholder="+91 98200 12345"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none"
@@ -141,9 +141,9 @@ export default function NewLeadModal({
               >
                 <option value="BUYER">Buyer</option>
                 <option value="SELLER">Seller</option>
-                <option value="INVESTOR">Investor</option>
-                <option value="AGENT">Co-Broke Agent</option>
-                <option value="RENTER">Tenant / Renter</option>
+                <option value="INVESTOR">Investor / HNI</option>
+                <option value="AGENT">Channel Partner (CP)</option>
+                <option value="RENTER">Corporate Tenant</option>
               </select>
             </div>
 
@@ -168,32 +168,33 @@ export default function NewLeadModal({
                 onChange={(e) => setFormData({ ...formData, source: e.target.value })}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none"
               >
+                <option value="MAGICBRICKS">MagicBricks</option>
+                <option value="99ACRES">99acres</option>
+                <option value="HOUSING_COM">Housing.com</option>
+                <option value="WHATSAPP">WhatsApp Direct</option>
+                <option value="REFERRAL">HNI Referral</option>
+                <option value="OPEN_HOUSE">Site Visit Walk-in</option>
                 <option value="WEBSITE">Direct Website</option>
-                <option value="ZILLOW">Zillow / Trulia</option>
-                <option value="REALTOR">Realtor.com</option>
-                <option value="REFERRAL">Client Referral</option>
-                <option value="OPEN_HOUSE">Open House</option>
-                <option value="SOCIAL_MEDIA">Social Media</option>
               </select>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="font-semibold text-slate-700">Budget Min ($)</label>
+              <label className="font-semibold text-slate-700">Budget Min (₹ INR)</label>
               <input
                 type="number"
-                placeholder="1000000"
+                placeholder="10000000"
                 value={formData.budgetMin}
                 onChange={(e) => setFormData({ ...formData, budgetMin: e.target.value })}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none"
               />
             </div>
             <div className="space-y-1">
-              <label className="font-semibold text-slate-700">Budget Max ($)</label>
+              <label className="font-semibold text-slate-700">Budget Max (₹ INR)</label>
               <input
                 type="number"
-                placeholder="2500000"
+                placeholder="25000000"
                 value={formData.budgetMax}
                 onChange={(e) => setFormData({ ...formData, budgetMax: e.target.value })}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none"
@@ -206,22 +207,22 @@ export default function NewLeadModal({
               <label className="font-semibold text-slate-700">Preferred Location</label>
               <input
                 type="text"
-                placeholder="e.g. Westlake, Austin TX"
+                placeholder="e.g. Worli, Mumbai or Indiranagar, Bengaluru"
                 value={formData.preferredLocation}
                 onChange={(e) => setFormData({ ...formData, preferredLocation: e.target.value })}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none"
               />
             </div>
             <div className="space-y-1">
-              <label className="font-semibold text-slate-700">Assigned Agent</label>
+              <label className="font-semibold text-slate-700">Assigned Broker</label>
               <select
                 value={formData.assignedAgent}
                 onChange={(e) => setFormData({ ...formData, assignedAgent: e.target.value })}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none"
               >
-                <option value="Sarah Jenkins">Sarah Jenkins (Principal Broker)</option>
-                <option value="Michael Vance">Michael Vance (Associate Partner)</option>
-                <option value="Elena Rostova">Elena Rostova (Luxury Specialist)</option>
+                <option value="Priya Sharma">Priya Sharma (Principal Broker)</option>
+                <option value="Vikram Malhotra">Vikram Malhotra (Partner - North India)</option>
+                <option value="Rajesh Verma">Rajesh Verma (Associate - South India)</option>
               </select>
             </div>
           </div>

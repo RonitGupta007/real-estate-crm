@@ -131,11 +131,11 @@ export default function PropertiesPage() {
             className="px-2.5 py-1.5 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none w-full md:w-44"
           >
             <option value="ALL">All Property Types</option>
-            <option value="LUXURY_ESTATE">Luxury Estate</option>
-            <option value="CONDO">Condo / Penthouse</option>
-            <option value="SINGLE_FAMILY">Single Family</option>
-            <option value="TOWNHOUSE">Townhouse</option>
-            <option value="COMMERCIAL">Commercial</option>
+            <option value="APARTMENT_4BHK">4 BHK Luxury Apartment</option>
+            <option value="APARTMENT_3BHK">3 BHK Premium Apartment</option>
+            <option value="LUXURY_PENTHOUSE">Sky Mansion / Penthouse</option>
+            <option value="GATED_VILLA">Gated Villa / Independent Estate</option>
+            <option value="COMMERCIAL_OFFICE">Commercial Corporate Office</option>
           </select>
         </div>
       </div>
@@ -188,8 +188,8 @@ export default function PropertiesPage() {
 
                   {/* Property Type Badge */}
                   <div className="absolute top-3 right-3">
-                    <span className="px-2 py-0.5 text-[10px] font-semibold bg-slate-900/80 text-white rounded-md backdrop-blur-xs">
-                      {prop.propertyType.replace(/_/g, " ")}
+                    <span className="px-2 py-0.5 text-[10px] font-semibold bg-slate-900/85 text-amber-300 rounded-md backdrop-blur-xs border border-amber-500/30">
+                      {prop.bhkConfig || prop.propertyType.replace(/_/g, " ")}
                     </span>
                   </div>
 
@@ -337,17 +337,27 @@ export default function PropertiesPage() {
                     {formatCurrency(selectedProperty.price)}
                   </p>
                   <p className="text-[11px] text-slate-500">
-                    ${selectedProperty.pricePerSqFt || Math.round(selectedProperty.price / (selectedProperty.squareFeet || 1))}/sq.ft
+                    ₹{(selectedProperty.pricePerSqFt || Math.round(selectedProperty.price / (selectedProperty.squareFeet || 1))).toLocaleString("en-IN")}/sq.ft
                   </p>
+                  {selectedProperty.reraId && (
+                    <span className="inline-block mt-1 text-[10px] px-2 py-0.5 rounded bg-amber-50 border border-amber-200 text-amber-800 font-medium">
+                      {selectedProperty.reraId}
+                    </span>
+                  )}
                 </div>
                 <div className="text-right">
                   <span className="text-[10px] text-slate-400 font-semibold uppercase">
                     Assigned Agent
                   </span>
                   <p className="text-xs font-bold text-slate-900">
-                    {selectedProperty.assignedAgent || "Sarah Jenkins"}
+                    {selectedProperty.assignedAgent || "Priya Sharma"}
                   </p>
                   <p className="text-[11px] text-amber-600 font-medium">Principal Broker</p>
+                  {selectedProperty.facingDirection && (
+                    <span className="inline-block mt-1 text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
+                      {selectedProperty.facingDirection}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -382,7 +392,7 @@ export default function PropertiesPage() {
                 <h4 className="font-semibold text-slate-900 text-xs mb-1">Location</h4>
                 <p className="text-slate-600 flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-amber-500" />
-                  {selectedProperty.address}, {selectedProperty.city}, {selectedProperty.state} {selectedProperty.zipCode}
+                  {selectedProperty.address}, {selectedProperty.city}, {selectedProperty.state} - {selectedProperty.zipCode}, {selectedProperty.country || "India"}
                 </p>
               </div>
             </div>

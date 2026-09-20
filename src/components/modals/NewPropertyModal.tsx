@@ -18,20 +18,24 @@ export default function NewPropertyModal({
   const [formData, setFormData] = useState({
     title: "",
     address: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    price: "",
-    propertyType: "SINGLE_FAMILY",
+    city: "Mumbai",
+    state: "Maharashtra",
+    zipCode: "400018",
+    price: "25000000",
+    propertyType: "APARTMENT_4BHK",
     status: "ACTIVE",
     bedrooms: "4",
-    bathrooms: "3.5",
+    bathrooms: "4",
     squareFeet: "3200",
     yearBuilt: "2023",
-    lotSize: "0.25 Acres",
+    lotSize: "N/A",
+    reraId: "MahaRERA Approved",
+    bhkConfig: "4 BHK Luxury Apartment",
+    facingDirection: "North-East (Vastu Compliant)",
+    maintenanceCharges: "25000",
     featuredImage: "",
     description: "",
-    features: "Central AC, Gourmet Kitchen, 2-Car Garage, Pool",
+    features: "Clubhouse, 100% Power Backup, Vastu Compliant, 2-Car Reserved Parking, Swimming Pool",
   });
 
   if (!isOpen) return null;
@@ -110,11 +114,11 @@ export default function NewPropertyModal({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="font-semibold text-slate-700">Street Address *</label>
+              <label className="font-semibold text-slate-700">Street / Locality Address *</label>
               <input
                 type="text"
                 required
-                placeholder="e.g. 1048 Ocean Avenue"
+                placeholder="e.g. Worli Sea Face / Golf Course Road"
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
@@ -127,7 +131,7 @@ export default function NewPropertyModal({
                 <input
                   type="text"
                   required
-                  placeholder="Los Angeles"
+                  placeholder="Mumbai"
                   value={formData.city}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
@@ -138,17 +142,17 @@ export default function NewPropertyModal({
                 <input
                   type="text"
                   required
-                  placeholder="CA"
+                  placeholder="Maharashtra"
                   value={formData.state}
                   onChange={(e) => setFormData({ ...formData, state: e.target.value })}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
                 />
               </div>
               <div className="space-y-1">
-                <label className="font-semibold text-slate-700">Zip</label>
+                <label className="font-semibold text-slate-700">PIN Code</label>
                 <input
                   type="text"
-                  placeholder="90210"
+                  placeholder="400018"
                   value={formData.zipCode}
                   onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
@@ -159,11 +163,11 @@ export default function NewPropertyModal({
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-1">
-              <label className="font-semibold text-slate-700">Listing Price ($) *</label>
+              <label className="font-semibold text-slate-700">Price in Rupees (₹ INR) *</label>
               <input
                 type="number"
                 required
-                placeholder="2500000"
+                placeholder="25000000"
                 value={formData.price}
                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
@@ -177,12 +181,12 @@ export default function NewPropertyModal({
                 onChange={(e) => setFormData({ ...formData, propertyType: e.target.value })}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
               >
-                <option value="LUXURY_ESTATE">Luxury Estate</option>
-                <option value="SINGLE_FAMILY">Single Family</option>
-                <option value="CONDO">Condo / Penthouse</option>
-                <option value="TOWNHOUSE">Townhouse</option>
-                <option value="COMMERCIAL">Commercial</option>
-                <option value="MULTI_FAMILY">Multi Family</option>
+                <option value="APARTMENT_4BHK">4 BHK Luxury Apartment</option>
+                <option value="APARTMENT_3BHK">3 BHK Premium Apartment</option>
+                <option value="LUXURY_PENTHOUSE">Sky Mansion / Penthouse</option>
+                <option value="GATED_VILLA">Gated Villa / Estate</option>
+                <option value="PLOT_LAND">Residential Plot / Land</option>
+                <option value="COMMERCIAL_OFFICE">Commercial Office Suite</option>
               </select>
             </div>
 
@@ -193,12 +197,46 @@ export default function NewPropertyModal({
                 onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
               >
-                <option value="ACTIVE">Active</option>
-                <option value="PENDING">Pending</option>
-                <option value="UNDER_CONTRACT">Under Contract</option>
-                <option value="SOLD">Sold</option>
+                <option value="ACTIVE">Active (Available)</option>
+                <option value="PENDING">Token Paid (Pending)</option>
+                <option value="UNDER_CONTRACT">BBA Executed</option>
+                <option value="SOLD">Registered (Sold)</option>
                 <option value="OFF_MARKET">Off Market</option>
               </select>
+            </div>
+          </div>
+
+          {/* Indian Real Estate Compliance: RERA & Vastu */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <label className="font-semibold text-slate-700">RERA Registration ID</label>
+              <input
+                type="text"
+                placeholder="e.g. MahaRERA P51900008965"
+                value={formData.reraId}
+                onChange={(e) => setFormData({ ...formData, reraId: e.target.value })}
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="font-semibold text-slate-700">Vastu / Facing Direction</label>
+              <input
+                type="text"
+                placeholder="e.g. North-East (Vastu Compliant)"
+                value={formData.facingDirection}
+                onChange={(e) => setFormData({ ...formData, facingDirection: e.target.value })}
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="font-semibold text-slate-700">Monthly Maintenance (₹)</label>
+              <input
+                type="number"
+                placeholder="25000"
+                value={formData.maintenanceCharges}
+                onChange={(e) => setFormData({ ...formData, maintenanceCharges: e.target.value })}
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none"
+              />
             </div>
           </div>
 

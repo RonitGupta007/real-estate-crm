@@ -83,12 +83,12 @@ export default function Navbar({
               </div>
               <div className="py-2 space-y-2">
                 <div className="p-2 bg-amber-50/60 rounded-lg border border-amber-100/50">
-                  <p className="font-medium text-slate-800">Alexander Wright offer submitted</p>
-                  <p className="text-slate-500 text-[11px] mt-0.5">$6.75M on Bel Air Modern Sanctuary</p>
+                  <p className="font-medium text-slate-800">Vikramaditya Singhania token deposit received</p>
+                  <p className="text-slate-500 text-[11px] mt-0.5">₹24.50 Cr on Lodha World Towers, Worli</p>
                 </div>
                 <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
-                  <p className="font-medium text-slate-800">Showing confirmed tomorrow 10 AM</p>
-                  <p className="text-slate-500 text-[11px] mt-0.5">Sophia Chen at 64 Franklin St Loft</p>
+                  <p className="font-medium text-slate-800">Site visit confirmed tomorrow 11 AM</p>
+                  <p className="text-slate-500 text-[11px] mt-0.5">Rohan Kapoor at Prestige Kingfisher Towers</p>
                 </div>
               </div>
             </div>

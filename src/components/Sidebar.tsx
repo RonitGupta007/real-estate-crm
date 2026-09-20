@@ -53,7 +53,7 @@ export default function Sidebar({
           </div>
           <div>
             <span className="font-bold text-lg tracking-tight text-white block leading-none">
-              ESTATIQ
+              EstateInt
             </span>
             <span className="text-[10px] uppercase tracking-widest text-amber-400 font-semibold">
               LUXURY CRM
@@ -163,17 +163,17 @@ export default function Sidebar({
           <div className="relative">
             <img
               src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&h=120&q=80"
-              alt="Sarah Jenkins"
+              alt="Priya Sharma"
               className="w-10 h-10 rounded-full object-cover border border-amber-500/40"
             />
             <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-slate-900 rounded-full"></span>
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-white truncate flex items-center gap-1">
-              Sarah Jenkins
+              Priya Sharma
               <ShieldCheck className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
             </p>
-            <p className="text-[11px] text-slate-400 truncate">Managing Principal Broker</p>
+            <p className="text-[11px] text-slate-400 truncate">Managing Principal Broker (MahaRERA)</p>
           </div>
         </div>
       </div>

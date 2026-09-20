@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { X, KanbanSquare } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
 
 interface NewDealModalProps {
   isOpen: boolean;
@@ -20,8 +21,8 @@ export default function NewDealModal({
 
   const [formData, setFormData] = useState({
     title: "",
-    dealValue: "3500000",
-    commissionRate: "3.0",
+    dealValue: "25000000",
+    commissionRate: "2.0",
     stage: "DISCOVERY",
     probability: "50",
     closeDate: "",
@@ -97,7 +98,7 @@ export default function NewDealModal({
             <input
               type="text"
               required
-              placeholder="e.g. Bel Air Villa - Smith Purchase"
+              placeholder="e.g. Lodha World One - Singhania Acquisition"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
@@ -106,11 +107,11 @@ export default function NewDealModal({
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="font-semibold text-slate-700">Deal Value ($) *</label>
+              <label className="font-semibold text-slate-700">Deal Value (₹ INR) *</label>
               <input
                 type="number"
                 required
-                placeholder="2500000"
+                placeholder="25000000"
                 value={formData.dealValue}
                 onChange={(e) => setFormData({ ...formData, dealValue: e.target.value })}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none"
@@ -136,13 +137,13 @@ export default function NewDealModal({
                 onChange={(e) => setFormData({ ...formData, stage: e.target.value })}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none"
               >
-                <option value="DISCOVERY">Discovery / Consultation</option>
-                <option value="SHOWING">Touring & Showings</option>
-                <option value="OFFER_SUBMITTED">Offer Submitted</option>
-                <option value="UNDER_CONTRACT">Under Contract (Escrow)</option>
-                <option value="CLOSING">Closing & Final Walkthrough</option>
-                <option value="CLOSED_WON">Closed (Won)</option>
-                <option value="CLOSED_LOST">Closed (Lost)</option>
+                <option value="DISCOVERY">Discovery / Vastu Match</option>
+                <option value="SHOWING">Site Visit & Inspection</option>
+                <option value="OFFER_SUBMITTED">Token / Booking (Bayana)</option>
+                <option value="UNDER_CONTRACT">BBA & Loan Sanction</option>
+                <option value="CLOSING">Stamp Duty & Registry</option>
+                <option value="CLOSED_WON">Possession & Khata (Won)</option>
+                <option value="CLOSED_LOST">Deal Dropped (Lost)</option>
               </select>
             </div>
             <div className="space-y-1">
@@ -184,7 +185,7 @@ export default function NewDealModal({
                 <option value="">None / Select Property</option>
                 {properties.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.title} (${p.price?.toLocaleString()})
+                    {p.title} ({formatCurrency(p.price)})
                   </option>
                 ))}
               </select>

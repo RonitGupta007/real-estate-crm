@@ -15,9 +15,9 @@ model Property {
   city            String
   state           String
   zipCode         String
-  country         String      @default("USA")
+  country         String      @default("India")
   price           Float
-  propertyType    String      // SINGLE_FAMILY, CONDO, TOWNHOUSE, COMMERCIAL, LUXURY_ESTATE, MULTI_FAMILY
+  propertyType    String      // APARTMENT_3BHK, APARTMENT_4BHK, LUXURY_PENTHOUSE, GATED_VILLA, PLOT_LAND, COMMERCIAL_OFFICE
   status          String      @default("ACTIVE") // ACTIVE, PENDING, UNDER_CONTRACT, SOLD, OFF_MARKET
   listingType     String      @default("FOR_SALE") // FOR_SALE, FOR_RENT
   bedrooms        Int
@@ -25,10 +25,14 @@ model Property {
   squareFeet      Int
   yearBuilt       Int?
   lotSize         String?
+  reraId          String?     // RERA Registration Number (e.g. MahaRERA / HARERA / Karnataka RERA)
+  bhkConfig       String?     // 3 BHK, 4 BHK, 5 BHK Penthouse, etc.
+  facingDirection String?     // East Facing, North Facing (Vastu Compliant)
+  maintenanceCharges Float?   // Monthly Society Maintenance (₹/month)
   description     String
   images          String      // JSON array of image URLs
   featuredImage   String
-  features        String      // JSON array of amenity tags: Pool, Garage, etc.
+  features        String      // JSON array of amenity tags: Pool, Clubhouse, Power Backup, etc.
   hoaFees         Float?
   pricePerSqFt    Float?
   assignedAgent   String?
@@ -51,14 +55,14 @@ model Lead {
   phone             String
   type              String      @default("BUYER") // BUYER, SELLER, INVESTOR, AGENT, RENTER
   status            String      @default("NEW") // NEW, CONTACTED, QUALIFIED, SHOWING, NEGOTIATING, WON, LOST
-  source            String      @default("WEBSITE") // WEBSITE, ZILLOW, REALTOR, REFERRAL, OPEN_HOUSE, SOCIAL_MEDIA
+  source            String      @default("MAGICBRICKS") // MAGICBRICKS, 99ACRES, HOUSING_COM, WHATSAPP, REFERRAL, WALK_IN, WEBSITE
   budgetMin         Float?
   budgetMax         Float?
   preferredLocation String?
   preferredType     String?
   priority          String      @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
   notes             String?
-  assignedAgent     String      @default("Sarah Jenkins")
+  assignedAgent     String      @default("Priya Sharma")
   lastContactedAt   DateTime?
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
@@ -90,7 +94,7 @@ model Deal {
   stage              String    @default("DISCOVERY") // DISCOVERY, SHOWING, OFFER_SUBMITTED, UNDER_CONTRACT, CLOSING, CLOSED_WON, CLOSED_LOST
   dealValue          Float
   expectedCommission Float
-  commissionRate     Float     @default(3.0)
+  commissionRate     Float     @default(2.0)
   closeDate          DateTime?
   probability        Int       @default(50) // 0 - 100
   notes              String?
@@ -118,7 +122,7 @@ model Showing {
   location    String?
   notes       String?
   feedback    String?
-  agentName   String   @default("Sarah Jenkins")
+  agentName   String   @default("Priya Sharma")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

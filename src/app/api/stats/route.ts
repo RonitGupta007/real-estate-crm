@@ -30,8 +30,8 @@ export async function GET() {
       }),
       prisma.deal.findMany({
         include: {
-          lead: { select: { firstName: true, lastName: true } },
-          property: { select: { title: true, price: true } },
+          lead: { select: { firstName: true, lastName: true, assignedAgent: true } },
+          property: { select: { title: true, price: true, assignedAgent: true } },
         },
       }),
       prisma.showing.findMany({
@@ -111,7 +111,7 @@ export async function GET() {
 
     for (const d of deals) {
       // Find agent from lead or assigned
-      const agent = d.lead?.firstName ? "Sarah Jenkins" : "Sarah Jenkins";
+      const agent = d.lead?.assignedAgent || d.property?.assignedAgent || "Priya Sharma";
       if (!agentStats[agent]) {
         agentStats[agent] = { activeDeals: 0, closedDeals: 0, salesVolume: 0, commission: 0 };
       }

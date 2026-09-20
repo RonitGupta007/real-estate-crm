@@ -113,11 +113,11 @@ export default function DashboardPage() {
               Executive Brokerage Dashboard
             </h1>
             <span className="px-2 py-0.5 text-[11px] font-semibold bg-amber-100 text-amber-800 rounded-md">
-              Sarah Jenkins Group
+              Priya Sharma Realty Partners • Mumbai & NCR
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Real-time overview of active listings, pending escrows, scheduled tours, and revenue metrics.
+            Real-time overview of active listings, pending token agreements, scheduled site visits, and brokerage revenue.
           </p>
         </div>
 
@@ -143,7 +143,7 @@ export default function DashboardPage() {
             className="flex items-center gap-1.5 px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-lg text-xs font-semibold shadow-xs transition"
           >
             <Calendar className="w-3.5 h-3.5" />
-            <span>Book Showing</span>
+            <span>Book Site Visit</span>
           </button>
         </div>
       </div>
@@ -162,7 +162,7 @@ export default function DashboardPage() {
               </span>
             </p>
             <p className="text-[11px] text-slate-600 mt-0.5">
-              Post-tour window open for Sophia Chen (Franklin Loft) • Stale VIP client re-engagement for Alexander Wright.
+              Post-visit window active for Rohan Kapoor (Kingfisher Towers) • Token advance terms pending for Vikramaditya Singhania.
             </p>
           </div>
         </div>
@@ -238,12 +238,12 @@ export default function DashboardPage() {
         <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
           {(stats?.dealsByStage || []).slice(0, 6).map((stageItem: any) => {
             const stageLabels: Record<string, string> = {
-              DISCOVERY: "Discovery",
-              SHOWING: "Touring",
-              OFFER_SUBMITTED: "Offer Out",
-              UNDER_CONTRACT: "In Escrow",
-              CLOSING: "Closing",
-              CLOSED_WON: "Closed Won",
+              DISCOVERY: "Discovery / Vastu",
+              SHOWING: "Site Visit",
+              OFFER_SUBMITTED: "Token / Bayana",
+              UNDER_CONTRACT: "BBA / Loan",
+              CLOSING: "Stamp & Registry",
+              CLOSED_WON: "Possession & Khata",
             };
 
             const colors: Record<string, string> = {

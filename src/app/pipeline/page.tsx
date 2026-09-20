@@ -20,12 +20,12 @@ import { formatCurrency, formatDate } from "@/lib/utils";
 import { useCRM } from "@/components/AppShell";
 
 const STAGES = [
-  { id: "DISCOVERY", title: "Discovery", color: "border-t-slate-500", badge: "bg-slate-100 text-slate-700" },
-  { id: "SHOWING", title: "Showing & Tour", color: "border-t-blue-500", badge: "bg-blue-50 text-blue-800" },
-  { id: "OFFER_SUBMITTED", title: "Offer Out", color: "border-t-amber-500", badge: "bg-amber-50 text-amber-800" },
-  { id: "UNDER_CONTRACT", title: "In Escrow", color: "border-t-indigo-600", badge: "bg-indigo-50 text-indigo-800" },
-  { id: "CLOSING", title: "Closing", color: "border-t-purple-500", badge: "bg-purple-50 text-purple-800" },
-  { id: "CLOSED_WON", title: "Closed Won", color: "border-t-emerald-500", badge: "bg-emerald-100 text-emerald-800" },
+  { id: "DISCOVERY", title: "Discovery / Vastu Match", color: "border-t-slate-500", badge: "bg-slate-100 text-slate-700" },
+  { id: "SHOWING", title: "Site Visit & Inspection", color: "border-t-blue-500", badge: "bg-blue-50 text-blue-800" },
+  { id: "OFFER_SUBMITTED", title: "Token / Booking (Bayana)", color: "border-t-amber-500", badge: "bg-amber-50 text-amber-800" },
+  { id: "UNDER_CONTRACT", title: "BBA & Loan Sanction", color: "border-t-indigo-600", badge: "bg-indigo-50 text-indigo-800" },
+  { id: "CLOSING", title: "Stamp Duty & Registry", color: "border-t-purple-500", badge: "bg-purple-50 text-purple-800" },
+  { id: "CLOSED_WON", title: "Possession & Khata", color: "border-t-emerald-500", badge: "bg-emerald-100 text-emerald-800" },
 ];
 
 export default function PipelinePage() {

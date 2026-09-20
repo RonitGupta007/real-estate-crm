@@ -58,7 +58,7 @@ export async function POST(request: Request) {
       status = "SCHEDULED",
       location,
       notes,
-      agentName = "Sarah Jenkins",
+      agentName = "Priya Sharma",
       leadId,
       propertyId,
     } = body;

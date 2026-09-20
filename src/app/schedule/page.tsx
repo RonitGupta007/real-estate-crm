@@ -58,11 +58,11 @@ export default function SchedulePage() {
   }
 
   const typeLabels: Record<string, { label: string; color: string }> = {
-    PROPERTY_VIEWING: { label: "Property Viewing", color: "bg-blue-50 text-blue-800 border-blue-200" },
-    OPEN_HOUSE: { label: "Open House", color: "bg-purple-50 text-purple-800 border-purple-200" },
-    CLIENT_MEETING: { label: "Client Consultation", color: "bg-emerald-50 text-emerald-800 border-emerald-200" },
-    INSPECTION: { label: "Property Inspection", color: "bg-amber-50 text-amber-800 border-amber-200" },
-    CLOSING: { label: "Closing Signing", color: "bg-indigo-50 text-indigo-800 border-indigo-200" },
+    PROPERTY_VIEWING: { label: "Site Visit & Walkthrough", color: "bg-blue-50 text-blue-800 border-blue-200" },
+    OPEN_HOUSE: { label: "VIP Open House Showcase", color: "bg-purple-50 text-purple-800 border-purple-200" },
+    CLIENT_MEETING: { label: "Vastu & Layout Consultation", color: "bg-emerald-50 text-emerald-800 border-emerald-200" },
+    INSPECTION: { label: "Structural & Snag Inspection", color: "bg-amber-50 text-amber-800 border-amber-200" },
+    CLOSING: { label: "Sub-Registrar Registry & Signing", color: "bg-indigo-50 text-indigo-800 border-indigo-200" },
   };
 
   return (
@@ -72,10 +72,10 @@ export default function SchedulePage() {
         <div>
           <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
             <CalendarIcon className="w-5 h-5 text-amber-500" />
-            Showings, Tours & Appointments
+            Site Visits, Tours & Appointments
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            {showings.length} scheduled appointments across listings and buyer walkthroughs.
+            {showings.length} scheduled site visits and client walkthroughs across luxury listings.
           </p>
         </div>
 
@@ -114,7 +114,7 @@ export default function SchedulePage() {
         <div className="bg-white p-12 rounded-2xl border border-slate-200 text-center space-y-3">
           <CalendarIcon className="w-10 h-10 text-slate-300 mx-auto" />
           <p className="text-sm font-semibold text-slate-700">No events found</p>
-          <p className="text-xs text-slate-400">Schedule your next property walkthrough or open house.</p>
+          <p className="text-xs text-slate-400">Schedule your next property site visit or VIP walkthrough.</p>
         </div>
       ) : (
         <div className="space-y-3.5">
@@ -231,7 +231,7 @@ export default function SchedulePage() {
                       <button
                         onClick={() => updateStatus(showing.id, "CANCELLED")}
                         className="px-2 py-1 text-slate-400 hover:text-rose-600 text-xs font-semibold transition"
-                        title="Cancel Showing"
+                        title="Cancel Site Visit"
                       >
                         Cancel
                       </button>
