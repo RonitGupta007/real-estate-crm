@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { runAutonomousFollowUpAudit } from "@/lib/agentic-followup";
+import { sendWhatsAppMessage, formatWhatsAppNumber } from "@/lib/whatsapp";
 
 export async function GET(request: Request) {
   try {
@@ -126,8 +127,16 @@ export async function POST(request: Request) {
         },
       });
 
-      // If created as immediately SENT, update lead and log activity
+      // If created as immediately SENT, attempt WhatsApp send (if channel is SMS) and update lead
       if (status === "SENT") {
+        let waResult = null;
+        if (suggestedChannel === "SMS" && followUp.lead?.phone) {
+          waResult = await sendWhatsAppMessage({
+            to: followUp.lead.phone,
+            body: followUp.draftContent,
+          });
+        }
+
         await prisma.lead.update({
           where: { id: leadId },
           data: {
@@ -143,11 +152,19 @@ export async function POST(request: Request) {
             ? "EMAIL"
             : "NOTE";
 
+        let actTitle = `Broker Follow-Up (${suggestedChannel}): ${followUp.lead.firstName} ${followUp.lead.lastName}`;
+        let actDesc = `Manual follow-up conducted: "${followUp.draftContent.slice(0, 160)}..." Rationale: ${followUp.reason}`;
+
+        if (waResult?.success) {
+          actTitle = `WhatsApp Auto-Sent (${waResult.provider?.toUpperCase()}): ${followUp.lead.firstName} ${followUp.lead.lastName}`;
+          actDesc = `Delivered to ${waResult.recipientPhone} (SID: ${waResult.messageId}). Message: "${followUp.draftContent.slice(0, 160)}..."`;
+        }
+
         await prisma.activity.create({
           data: {
             type: activityType,
-            title: `Broker Follow-Up (${suggestedChannel}): ${followUp.lead.firstName} ${followUp.lead.lastName}`,
-            description: `Manual follow-up conducted: "${followUp.draftContent.slice(0, 160)}..." Rationale: ${followUp.reason}`,
+            title: actTitle,
+            description: actDesc,
             leadId: followUp.leadId,
             propertyId: followUp.propertyId || undefined,
             dealId: followUp.dealId || undefined,

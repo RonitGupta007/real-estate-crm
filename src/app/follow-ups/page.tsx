@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { useCRM } from "@/components/AppShell";
+import WhatsAppSettingsModal from "@/components/modals/WhatsAppSettingsModal";
 
 export default function FollowUpsPage() {
   const { openModal, refreshTrigger, triggerRefresh } = useCRM();
@@ -33,10 +34,25 @@ export default function FollowUpsPage() {
   const [typeFilter, setTypeFilter] = useState("ALL");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [executingId, setExecutingId] = useState<string | null>(null);
+  const [whatsAppModalOpen, setWhatsAppModalOpen] = useState(false);
+  const [whatsAppStatus, setWhatsAppStatus] = useState<any>(null);
 
   useEffect(() => {
     loadFollowUps();
+    loadWhatsAppStatus();
   }, [activeTab, typeFilter, refreshTrigger]);
+
+  async function loadWhatsAppStatus() {
+    try {
+      const res = await fetch("/api/settings/whatsapp");
+      if (res.ok) {
+        const data = await res.json();
+        setWhatsAppStatus(data);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   async function loadFollowUps() {
     try {
@@ -144,10 +160,18 @@ export default function FollowUpsPage() {
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-stretch md:items-center gap-3 z-10">
+        <div className="flex flex-col sm:flex-row items-stretch md:items-center gap-2.5 z-10">
+          <button
+            onClick={() => setWhatsAppModalOpen(true)}
+            className="flex items-center justify-center gap-2 px-4 py-3 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-600/50 text-emerald-300 font-bold rounded-xl text-xs shadow-md transition active:scale-98"
+            title="Configure automated WhatsApp sending (Twilio / Meta)"
+          >
+            <MessageSquare className="w-4 h-4 text-emerald-400" />
+            <span>{whatsAppStatus?.active ? "WhatsApp: Active" : "WhatsApp Setup"}</span>
+          </button>
           <button
             onClick={() => openModal("followup")}
-            className="flex items-center justify-center gap-2 px-5 py-3 bg-white hover:bg-slate-100 text-slate-900 font-bold rounded-xl text-xs shadow-md transition active:scale-98"
+            className="flex items-center justify-center gap-2 px-4 py-3 bg-white hover:bg-slate-100 text-slate-900 font-bold rounded-xl text-xs shadow-md transition active:scale-98"
           >
             <Plus className="w-4 h-4 text-amber-600" />
             <span>New Follow-Up</span>
@@ -155,7 +179,7 @@ export default function FollowUpsPage() {
           <button
             onClick={handleRunAudit}
             disabled={auditing}
-            className="flex items-center justify-center gap-2 px-5 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs shadow-lg shadow-amber-500/20 transition active:scale-98 disabled:opacity-50"
+            className="flex items-center justify-center gap-2 px-4 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs shadow-lg shadow-amber-500/20 transition active:scale-98 disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 ${auditing ? "animate-spin" : ""}`} />
             <span>{auditing ? "Scanning Signals..." : "Run AI Audit"}</span>
@@ -305,6 +329,13 @@ export default function FollowUpsPage() {
           })}
         </div>
       )}
+
+      {/* WhatsApp Gateway Settings Modal */}
+      <WhatsAppSettingsModal
+        isOpen={whatsAppModalOpen}
+        onClose={() => setWhatsAppModalOpen(false)}
+        onUpdated={() => loadWhatsAppStatus()}
+      />
     </div>
   );
 }
