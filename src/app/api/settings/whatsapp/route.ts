@@ -46,6 +46,7 @@ export async function POST(request: Request) {
         twilioSid,
         twilioToken,
         twilioFrom,
+        twilioContentSid,
         metaToken,
         metaPhoneId,
       } = body;
@@ -60,6 +61,7 @@ export async function POST(request: Request) {
       if (twilioSid !== undefined) updates["TWILIO_ACCOUNT_SID"] = twilioSid;
       if (twilioToken !== undefined) updates["TWILIO_AUTH_TOKEN"] = twilioToken;
       if (twilioFrom !== undefined) updates["TWILIO_WHATSAPP_FROM"] = twilioFrom;
+      if (twilioContentSid !== undefined) updates["TWILIO_CONTENT_SID"] = twilioContentSid;
       if (metaToken !== undefined) updates["META_WHATSAPP_TOKEN"] = metaToken;
       if (metaPhoneId !== undefined) updates["META_WHATSAPP_PHONE_ID"] = metaPhoneId;
 

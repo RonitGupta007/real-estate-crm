@@ -34,6 +34,7 @@ export default function WhatsAppSettingsModal({
     sid: "",
     token: "",
     from: "whatsapp:+14155238886",
+    contentSid: "",
   });
 
   const [metaForm, setMetaForm] = useState({
@@ -56,7 +57,11 @@ export default function WhatsAppSettingsModal({
         const data = await res.json();
         setStatus(data);
         if (data.twilioFrom) {
-          setTwilioForm((prev) => ({ ...prev, from: data.twilioFrom }));
+          setTwilioForm((prev) => ({
+            ...prev,
+            from: data.twilioFrom,
+            contentSid: data.twilioContentSid || prev.contentSid,
+          }));
         }
       }
     } catch (e) {
@@ -75,6 +80,7 @@ export default function WhatsAppSettingsModal({
         payload.twilioSid = twilioForm.sid;
         payload.twilioToken = twilioForm.token;
         payload.twilioFrom = twilioForm.from;
+        payload.twilioContentSid = twilioForm.contentSid;
       } else {
         payload.metaToken = metaForm.token;
         payload.metaPhoneId = metaForm.phoneId;
@@ -246,6 +252,20 @@ export default function WhatsAppSettingsModal({
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none font-mono focus:bg-white focus:ring-2 focus:ring-amber-500/20"
                 />
                 <span className="text-[10px] text-slate-400 block">Default Sandbox: whatsapp:+14155238886</span>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-slate-700">Content SID / Template SID (Optional)</label>
+                <input
+                  type="text"
+                  placeholder="HXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                  value={twilioForm.contentSid}
+                  onChange={(e) => setTwilioForm({ ...twilioForm, contentSid: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none font-mono focus:bg-white focus:ring-2 focus:ring-amber-500/20"
+                />
+                <span className="text-[10px] text-slate-500 block leading-relaxed">
+                  Only required if initiating messages outside 24-hr customer window without prior client opt-in.
+                </span>
               </div>
 
               <div className="flex justify-end pt-1">

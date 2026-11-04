@@ -39,6 +39,7 @@ export async function sendWhatsAppMessage({
   const twilioSid = process.env.TWILIO_ACCOUNT_SID;
   const twilioToken = process.env.TWILIO_AUTH_TOKEN;
   const twilioFrom = process.env.TWILIO_WHATSAPP_FROM || "whatsapp:+14155238886";
+  const twilioContentSid = process.env.TWILIO_CONTENT_SID;
 
   if (twilioSid && twilioToken) {
     try {
@@ -51,7 +52,17 @@ export async function sendWhatsAppMessage({
         twilioFrom.startsWith("whatsapp:") ? twilioFrom : `whatsapp:${twilioFrom}`
       );
       params.append("To", `whatsapp:${formattedTo}`);
-      params.append("Body", body);
+
+      // If a pre-approved template ContentSid is configured, use Twilio Content API format
+      if (twilioContentSid && twilioContentSid.startsWith("HX")) {
+        params.append("ContentSid", twilioContentSid);
+        params.append(
+          "ContentVariables",
+          JSON.stringify({ "1": body.slice(0, 100), "2": formattedTo })
+        );
+      } else {
+        params.append("Body", body);
+      }
 
       const response = await fetch(url, {
         method: "POST",
@@ -71,9 +82,14 @@ export async function sendWhatsAppMessage({
           recipientPhone: formattedTo,
         };
       } else {
+        let errorMsg = data.message || `Twilio error ${response.status}`;
+        if (data.code === 63016 || errorMsg.toLowerCase().includes("contentsid")) {
+          errorMsg =
+            "Twilio/Meta requires a ContentSid (pre-approved template) outside the 24-hr session. In Twilio Sandbox: send 'join <sandbox-keyword>' from your WhatsApp to +1 415 523 8886 to open the 24-hr session for freeform messages, or add a ContentSid in settings.";
+        }
         return {
           success: false,
-          error: data.message || `Twilio error ${response.status}`,
+          error: errorMsg,
           provider: "twilio",
           recipientPhone: formattedTo,
         };
@@ -157,6 +173,7 @@ export function getWhatsAppGatewayStatus() {
     active: hasTwilio || hasMeta,
     provider: hasTwilio ? "twilio" : hasMeta ? "meta" : "none",
     twilioFrom: process.env.TWILIO_WHATSAPP_FROM || "whatsapp:+14155238886",
+    twilioContentSid: process.env.TWILIO_CONTENT_SID || "",
     hasTwilio,
     hasMeta,
   };
