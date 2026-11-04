@@ -19,12 +19,13 @@ import {
   TrendingUp,
   AlertTriangle,
   Zap,
+  Plus,
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { useCRM } from "@/components/AppShell";
 
 export default function FollowUpsPage() {
-  const { refreshTrigger, triggerRefresh } = useCRM();
+  const { openModal, refreshTrigger, triggerRefresh } = useCRM();
   const [followUps, setFollowUps] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [auditing, setAuditing] = useState(false);
@@ -112,6 +113,7 @@ export default function FollowUpsPage() {
   const pendingCount = followUps.filter((f) => f.status === "PENDING").length;
 
   const typeLabels: Record<string, { label: string; badge: string }> = {
+    MANUAL: { label: "Manual Broker Outreach", badge: "bg-blue-100 text-blue-900 border-blue-200" },
     POST_SHOWING: { label: "Post-Showing Tour", badge: "bg-amber-100 text-amber-900 border-amber-200" },
     STALE_LEAD: { label: "Stale High-Value Lead", badge: "bg-rose-100 text-rose-900 border-rose-200" },
     OFFER_CHECKIN: { label: "Offer / Counter Check-in", badge: "bg-indigo-100 text-indigo-900 border-indigo-200" },
@@ -138,18 +140,25 @@ export default function FollowUpsPage() {
           </h1>
           <p className="text-xs text-slate-300 leading-relaxed">
             Continuous background analysis of property tours, client inactivity, and offer milestones.
-            Generates high-touch, personalized outreach tailored to luxury buyers and sellers.
+            Schedule manual high-touch outreach or review AI-synthesized communication drafts.
           </p>
         </div>
 
         <div className="flex flex-col sm:flex-row items-stretch md:items-center gap-3 z-10">
+          <button
+            onClick={() => openModal("followup")}
+            className="flex items-center justify-center gap-2 px-5 py-3 bg-white hover:bg-slate-100 text-slate-900 font-bold rounded-xl text-xs shadow-md transition active:scale-98"
+          >
+            <Plus className="w-4 h-4 text-amber-600" />
+            <span>New Follow-Up</span>
+          </button>
           <button
             onClick={handleRunAudit}
             disabled={auditing}
             className="flex items-center justify-center gap-2 px-5 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs shadow-lg shadow-amber-500/20 transition active:scale-98 disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 ${auditing ? "animate-spin" : ""}`} />
-            <span>{auditing ? "Scanning CRM Signals..." : "Run Autonomous Audit"}</span>
+            <span>{auditing ? "Scanning Signals..." : "Run AI Audit"}</span>
           </button>
         </div>
 
@@ -234,10 +243,12 @@ export default function FollowUpsPage() {
           className="px-3 py-1.5 border border-slate-200 rounded-lg bg-slate-50 font-medium focus:outline-none"
         >
           <option value="ALL">All Trigger Types</option>
+          <option value="MANUAL">Manual Broker Follow-Ups</option>
           <option value="POST_SHOWING">Post-Showing Tours</option>
           <option value="STALE_LEAD">Stale High-Value Leads</option>
           <option value="OFFER_CHECKIN">Offer Check-ins</option>
           <option value="NEW_MATCH">Inventory Matches</option>
+          <option value="MILESTONE">Contract Milestones</option>
         </select>
       </div>
 
@@ -252,14 +263,22 @@ export default function FollowUpsPage() {
           <h3 className="text-sm font-bold text-slate-800">All Client Follow-Ups Up to Date!</h3>
           <p className="text-xs text-slate-400 max-w-md mx-auto">
             Your pipeline has no unattended tours or stale high-priority clients.
-            Click "Run Autonomous Audit" anytime to trigger a fresh scan across your database.
+            You can create a custom follow-up task or trigger a fresh AI scan across your database.
           </p>
-          <button
-            onClick={handleRunAudit}
-            className="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 transition"
-          >
-            Scan for New Opportunities
-          </button>
+          <div className="flex items-center justify-center gap-3 pt-1">
+            <button
+              onClick={() => openModal("followup")}
+              className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg text-xs shadow-xs transition"
+            >
+              + Create Manual Follow-Up
+            </button>
+            <button
+              onClick={handleRunAudit}
+              className="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 transition"
+            >
+              Scan for New Opportunities
+            </button>
+          </div>
         </div>
       ) : (
         <div className="space-y-4">
@@ -488,6 +507,45 @@ function FollowUpCard({
         </button>
 
         <div className="flex items-center gap-2">
+          {/* Quick Direct Launch Actions */}
+          {selectedChannel === "SMS" && item.lead?.phone && (
+            <a
+              href={`https://wa.me/${(() => {
+                const digits = item.lead.phone.replace(/[^0-9]/g, "");
+                return digits.length === 10 ? `91${digits}` : digits;
+              })()}?text=${encodeURIComponent(message)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow-xs flex items-center gap-1.5 transition"
+              title="Open draft in WhatsApp"
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">WhatsApp</span>
+            </a>
+          )}
+
+          {selectedChannel === "CALL_SCRIPT" && item.lead?.phone && (
+            <a
+              href={`tel:${item.lead.phone}`}
+              className="px-3 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg shadow-xs flex items-center gap-1.5 transition"
+              title="Call Client"
+            >
+              <Phone className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Dial Client</span>
+            </a>
+          )}
+
+          {selectedChannel === "EMAIL" && item.lead?.email && (
+            <a
+              href={`mailto:${item.lead.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`}
+              className="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg shadow-xs flex items-center gap-1.5 transition"
+              title="Open Email Client"
+            >
+              <Mail className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Open Mail</span>
+            </a>
+          )}
+
           {item.status === "SENT" ? (
             <span className="px-3 py-1.5 bg-emerald-100 text-emerald-800 rounded-lg font-bold flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-600" />

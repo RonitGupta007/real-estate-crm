@@ -8,6 +8,7 @@ import NewPropertyModal from "./modals/NewPropertyModal";
 import NewLeadModal from "./modals/NewLeadModal";
 import NewDealModal from "./modals/NewDealModal";
 import NewShowingModal from "./modals/NewShowingModal";
+import NewFollowUpModal from "./modals/NewFollowUpModal";
 
 import { usePathname } from "next/navigation";
 import {
@@ -19,7 +20,7 @@ import {
 } from "lucide-react";
 
 interface CRMContextType {
-  openModal: (type: "property" | "lead" | "deal" | "showing") => void;
+  openModal: (type: "property" | "lead" | "deal" | "showing" | "followup", initialId?: string) => void;
   searchTerm: string;
   refreshTrigger: number;
   triggerRefresh: () => void;
@@ -36,7 +37,8 @@ export const useCRM = () => useContext(CRMContext);
 
 export default function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const [modalType, setModalType] = useState<"property" | "lead" | "deal" | "showing" | null>(null);
+  const [modalType, setModalType] = useState<"property" | "lead" | "deal" | "showing" | "followup" | null>(null);
+  const [initialModalId, setInitialModalId] = useState<string | undefined>(undefined);
   const [searchTerm, setSearchTerm] = useState("");
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -45,7 +47,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
     setRefreshTrigger((prev) => prev + 1);
   };
 
-  const handleOpenModal = (type: "property" | "lead" | "deal" | "showing") => {
+  const handleOpenModal = (type: "property" | "lead" | "deal" | "showing" | "followup", initialId?: string) => {
+    setInitialModalId(initialId);
     setModalType(type);
   };
 
@@ -163,7 +166,22 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
         <NewShowingModal
           isOpen={modalType === "showing"}
-          onClose={() => setModalType(null)}
+          onClose={() => {
+            setModalType(null);
+            setInitialModalId(undefined);
+          }}
+          onSuccess={() => {
+            triggerRefresh();
+          }}
+        />
+
+        <NewFollowUpModal
+          isOpen={modalType === "followup"}
+          initialLeadId={initialModalId}
+          onClose={() => {
+            setModalType(null);
+            setInitialModalId(undefined);
+          }}
           onSuccess={() => {
             triggerRefresh();
           }}

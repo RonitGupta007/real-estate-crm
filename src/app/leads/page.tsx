@@ -389,6 +389,15 @@ export default function LeadsPage() {
                 </a>
               </div>
 
+              {/* Schedule Follow-Up Button */}
+              <button
+                onClick={() => openModal("followup", selectedLead.id)}
+                className="w-full py-2.5 px-3 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-bold rounded-xl shadow-xs flex items-center justify-center gap-2 transition active:scale-98"
+              >
+                <Sparkles className="w-4 h-4 text-slate-950" />
+                <span>Schedule Manual Follow-Up for {selectedLead.firstName}</span>
+              </button>
+
               {/* Requirements & Budget */}
               <div className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 space-y-3">
                 <h3 className="font-bold text-slate-900 text-xs">Buyer Profile & Targets</h3>

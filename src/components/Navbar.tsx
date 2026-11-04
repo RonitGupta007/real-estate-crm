@@ -12,10 +12,11 @@ import {
   CheckCircle2,
   ChevronDown,
   Menu,
+  Sparkles,
 } from "lucide-react";
 
 interface NavbarProps {
-  onOpenNewModal: (type: "property" | "lead" | "deal" | "showing") => void;
+  onOpenNewModal: (type: "property" | "lead" | "deal" | "showing" | "followup") => void;
   onSearchChange?: (term: string) => void;
   searchTerm?: string;
   onToggleMobileMenu?: () => void;
@@ -155,6 +156,17 @@ export default function Navbar({
                 <div>
                   <div className="font-medium text-slate-900">Schedule Showing</div>
                   <div className="text-[10px] text-slate-400">Book property tour</div>
+                </div>
+              </button>
+
+              <button
+                onClick={() => onOpenNewModal("followup")}
+                className="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-slate-50 hover:text-amber-600 flex items-center gap-2.5 transition"
+              >
+                <Sparkles className="w-4 h-4 text-amber-500" />
+                <div>
+                  <div className="font-medium text-slate-900">Manual Follow-Up</div>
+                  <div className="text-[10px] text-slate-400">Log outreach or call task</div>
                 </div>
               </button>
             </div>

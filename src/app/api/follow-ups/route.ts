@@ -82,6 +82,95 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const body = await request.json().catch(() => ({}));
+
+    // If manual follow-up creation payload with leadId
+    if (body.leadId) {
+      const {
+        leadId,
+        propertyId,
+        dealId,
+        type = "MANUAL",
+        urgency = "HIGH",
+        reason,
+        suggestedChannel = "SMS",
+        draftSubject,
+        draftContent,
+        status = "PENDING",
+      } = body;
+
+      if (!draftContent || !draftContent.trim()) {
+        return NextResponse.json(
+          { error: "Follow-up message or discussion notes are required." },
+          { status: 400 }
+        );
+      }
+
+      const followUp = await prisma.followUp.create({
+        data: {
+          leadId,
+          propertyId: propertyId || undefined,
+          dealId: dealId || undefined,
+          type,
+          urgency,
+          reason: reason || "Manual follow-up logged by broker.",
+          suggestedChannel,
+          draftSubject: draftSubject || undefined,
+          draftContent: draftContent.trim(),
+          status,
+        },
+        include: {
+          lead: true,
+          property: true,
+          deal: true,
+        },
+      });
+
+      // If created as immediately SENT, update lead and log activity
+      if (status === "SENT") {
+        await prisma.lead.update({
+          where: { id: leadId },
+          data: {
+            lastContactedAt: new Date(),
+            status: followUp.lead.status === "NEW" ? "CONTACTED" : undefined,
+          },
+        });
+
+        const activityType =
+          suggestedChannel === "CALL_SCRIPT"
+            ? "CALL"
+            : suggestedChannel === "EMAIL"
+            ? "EMAIL"
+            : "NOTE";
+
+        await prisma.activity.create({
+          data: {
+            type: activityType,
+            title: `Broker Follow-Up (${suggestedChannel}): ${followUp.lead.firstName} ${followUp.lead.lastName}`,
+            description: `Manual follow-up conducted: "${followUp.draftContent.slice(0, 160)}..." Rationale: ${followUp.reason}`,
+            leadId: followUp.leadId,
+            propertyId: followUp.propertyId || undefined,
+            dealId: followUp.dealId || undefined,
+          },
+        });
+      } else {
+        // Log planned follow-up task activity
+        await prisma.activity.create({
+          data: {
+            type: "NOTE",
+            title: `Follow-Up Scheduled: ${followUp.lead.firstName} ${followUp.lead.lastName}`,
+            description: `Priority ${urgency} follow-up scheduled via ${suggestedChannel}. Topic: ${followUp.reason}`,
+            leadId: followUp.leadId,
+            propertyId: followUp.propertyId || undefined,
+            dealId: followUp.dealId || undefined,
+          },
+        });
+      }
+
+      return NextResponse.json(followUp, { status: 201 });
+    }
+
+    // Otherwise, trigger the autonomous audit
     const count = await runAutonomousFollowUpAudit();
     return NextResponse.json({
       success: true,

@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 interface SidebarProps {
-  onOpenNewModal?: (type: "property" | "lead" | "deal" | "showing") => void;
+  onOpenNewModal?: (type: "property" | "lead" | "deal" | "showing" | "followup") => void;
   isMobileOpen?: boolean;
   onCloseMobile?: () => void;
 }
@@ -153,6 +153,15 @@ export default function Sidebar({
             className="w-full text-left px-3 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-amber-400 rounded-md transition flex items-center justify-between"
           >
             <span>+ Book Showing</span>
+          </button>
+          <button
+            onClick={() => {
+              onCloseMobile?.();
+              onOpenNewModal?.("followup");
+            }}
+            className="w-full text-left px-3 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-amber-400 rounded-md transition flex items-center justify-between"
+          >
+            <span>+ Manual Follow-Up</span>
           </button>
         </div>
       </div>
