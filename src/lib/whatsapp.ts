@@ -1,7 +1,12 @@
+import {
+  getWhatsAppWebStatus,
+  sendWhatsAppWebMessage,
+} from "./whatsapp-web";
+
 export interface SendWhatsAppResult {
   success: boolean;
   messageId?: string;
-  provider?: "twilio" | "meta" | "simulated";
+  provider?: "whatsapp-web" | "twilio" | "meta" | "simulated";
   error?: string;
   recipientPhone: string;
 }
@@ -23,8 +28,11 @@ export function formatWhatsAppNumber(phone: string): string {
 }
 
 /**
- * Sends a real automated WhatsApp message via Twilio or Meta WhatsApp Cloud API.
- * If credentials are not yet set in .env, returns simulated status with configuration guide.
+ * Sends a real automated WhatsApp message.
+ * Priority 1: Direct WhatsApp Web link (zero restrictions, no ContentSid, no 24hr window).
+ * Priority 2: Twilio WhatsApp API (if configured).
+ * Priority 3: Meta WhatsApp Cloud API (if configured).
+ * Fallback: GATEWAY_NOT_CONFIGURED error with instructions.
  */
 export async function sendWhatsAppMessage({
   to,
@@ -35,7 +43,23 @@ export async function sendWhatsAppMessage({
 }): Promise<SendWhatsAppResult> {
   const formattedTo = formatWhatsAppNumber(to);
 
-  // 1. Try Twilio WhatsApp API
+  // 1. Direct WhatsApp Web (Zero restrictions, native delivery)
+  const webStatus = getWhatsAppWebStatus();
+  if (webStatus.isConnected) {
+    try {
+      const res = await sendWhatsAppWebMessage(to, body);
+      return {
+        success: true,
+        messageId: res.messageId || undefined,
+        provider: "whatsapp-web",
+        recipientPhone: res.recipientPhone,
+      };
+    } catch (err: any) {
+      console.warn("Direct WhatsApp Web send failed, attempting fallback:", err.message);
+    }
+  }
+
+  // 2. Try Twilio WhatsApp API
   const twilioSid = process.env.TWILIO_ACCOUNT_SID;
   const twilioToken = process.env.TWILIO_AUTH_TOKEN;
   const twilioFrom = process.env.TWILIO_WHATSAPP_FROM || "whatsapp:+14155238886";
@@ -85,7 +109,7 @@ export async function sendWhatsAppMessage({
         let errorMsg = data.message || `Twilio error ${response.status}`;
         if (data.code === 63016 || errorMsg.toLowerCase().includes("contentsid")) {
           errorMsg =
-            "Twilio/Meta requires a ContentSid (pre-approved template) outside the 24-hr session. In Twilio Sandbox: send 'join <sandbox-keyword>' from your WhatsApp to +1 415 523 8886 to open the 24-hr session for freeform messages, or add a ContentSid in settings.";
+            "Twilio/Meta requires a ContentSid template outside 24h. Use Direct WhatsApp Web (Scan QR) above to send instantly with 0 restrictions!";
         }
         return {
           success: false,
@@ -104,7 +128,7 @@ export async function sendWhatsAppMessage({
     }
   }
 
-  // 2. Try Meta WhatsApp Business Cloud API
+  // 3. Try Meta WhatsApp Business Cloud API
   const metaToken = process.env.META_WHATSAPP_TOKEN;
   const metaPhoneId = process.env.META_WHATSAPP_PHONE_ID;
 
@@ -152,7 +176,7 @@ export async function sendWhatsAppMessage({
     }
   }
 
-  // 3. Fallback when credentials are not yet configured
+  // 4. Fallback when credentials are not yet configured
   return {
     success: false,
     error: "GATEWAY_NOT_CONFIGURED",
@@ -162,6 +186,7 @@ export async function sendWhatsAppMessage({
 }
 
 export function getWhatsAppGatewayStatus() {
+  const waWeb = getWhatsAppWebStatus();
   const hasTwilio = Boolean(
     process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN
   );
@@ -169,9 +194,21 @@ export function getWhatsAppGatewayStatus() {
     process.env.META_WHATSAPP_TOKEN && process.env.META_WHATSAPP_PHONE_ID
   );
 
+  const active = waWeb.isConnected || hasTwilio || hasMeta;
+  const provider = waWeb.isConnected
+    ? ("whatsapp-web" as const)
+    : hasTwilio
+    ? ("twilio" as const)
+    : hasMeta
+    ? ("meta" as const)
+    : ("none" as const);
+
   return {
-    active: hasTwilio || hasMeta,
-    provider: hasTwilio ? "twilio" : hasMeta ? "meta" : "none",
+    active,
+    provider,
+    isWhatsAppWebConnected: waWeb.isConnected,
+    whatsappWebStatus: waWeb.status,
+    whatsappWebUser: waWeb.user,
     twilioFrom: process.env.TWILIO_WHATSAPP_FROM || "whatsapp:+14155238886",
     twilioContentSid: process.env.TWILIO_CONTENT_SID || "",
     hasTwilio,
