@@ -1,13 +1,4 @@
-# build_mca_html_report.py
-# Generates a high-quality, print-ready HTML and Markdown version of the
-# MCA Minor Project Report for EstateInt strictly conforming to VIPS guidelines.
-
-import os
-
-OUTPUT_DIR = r"C:\Users\DELL\Downloads\New folder (2)"
-DOWNLOADS_DIR = r"C:\Users\DELL\Downloads"
-
-html_content = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -492,22 +483,3 @@ html_content = """<!DOCTYPE html>
 
 </body>
 </html>
-"""
-
-def generate_html_and_md():
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    os.makedirs(DOWNLOADS_DIR, exist_ok=True)
-    
-    html_path1 = os.path.join(OUTPUT_DIR, "EstateInt_MCA_Project_Report_2026.html")
-    html_path2 = os.path.join(DOWNLOADS_DIR, "EstateInt_MCA_Project_Report_2026.html")
-    
-    with open(html_path1, "w", encoding="utf-8") as f:
-        f.write(html_content)
-    with open(html_path2, "w", encoding="utf-8") as f:
-        f.write(html_content)
-        
-    print(f"Generated HTML report at: {html_path1}")
-    print(f"Mirror HTML created at: {html_path2}")
-
-if __name__ == "__main__":
-    generate_html_and_md()
