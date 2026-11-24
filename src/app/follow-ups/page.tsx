@@ -163,11 +163,12 @@ export default function FollowUpsPage() {
         <div className="flex flex-col sm:flex-row items-stretch md:items-center gap-2.5 z-10">
           <button
             onClick={() => setWhatsAppModalOpen(true)}
-            className="flex items-center justify-center gap-2 px-4 py-3 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-600/50 text-emerald-300 font-bold rounded-xl text-xs shadow-md transition active:scale-98"
+            className="flex items-center justify-center gap-2 px-4 py-3 bg-red-400 hover:bg-slate-100 text-slate-900 font-bold rounded-xl text-xs shadow-md transition active:scale-98 border border-slate-200/60"
             title="Configure automated WhatsApp sending (Twilio / Meta)"
           >
-            <MessageSquare className="w-4 h-4 text-emerald-400" />
+            <MessageSquare className={`w-4 h-4 ${whatsAppStatus?.active ? "text-emerald-600" : "text-amber-500"}`} />
             <span>{whatsAppStatus?.active ? "WhatsApp: Active" : "WhatsApp Setup"}</span>
+            <span className={`w-2 h-2 rounded-full ${whatsAppStatus?.active ? "bg-emerald-500 animate-pulse" : "bg-amber-400"}`} />
           </button>
           <button
             onClick={() => openModal("followup")}
