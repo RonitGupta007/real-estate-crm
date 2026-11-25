@@ -19,18 +19,37 @@ import {
   Sparkles,
   ExternalLink,
   ChevronDown,
+  Trash2,
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { useCRM } from "@/components/AppShell";
 
 export default function PropertiesPage() {
-  const { openModal, refreshTrigger } = useCRM();
+  const { openModal, refreshTrigger, triggerRefresh } = useCRM();
   const [properties, setProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [typeFilter, setTypeFilter] = useState("ALL");
   const [selectedProperty, setSelectedProperty] = useState<any | null>(null);
+
+  async function deleteProperty(id: string) {
+    if (!confirm("Are you sure you want to permanently delete this property listing? Linked showings and records will be updated.")) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/properties/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setProperties((prev) => prev.filter((p) => p.id !== id));
+        setSelectedProperty(null);
+        triggerRefresh();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   useEffect(() => {
     async function loadProperties() {
@@ -277,6 +296,13 @@ export default function PropertiesPage() {
                       <Calendar className="w-3.5 h-3.5 text-amber-600" />
                       <span>Tour</span>
                     </button>
+                    <button
+                      onClick={() => deleteProperty(prop.id)}
+                      className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 rounded-lg transition"
+                      title="Delete Property"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -399,12 +425,22 @@ export default function PropertiesPage() {
 
             {/* Drawer Actions */}
             <div className="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
-              <button
-                onClick={() => setSelectedProperty(null)}
-                className="px-4 py-2 text-slate-600 hover:text-slate-900 text-xs font-semibold"
-              >
-                Close
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setSelectedProperty(null)}
+                  className="px-3 py-2 text-slate-600 hover:text-slate-900 text-xs font-semibold"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => deleteProperty(selectedProperty.id)}
+                  className="px-3 py-2 text-rose-600 hover:bg-rose-50 border border-rose-200 rounded-lg text-xs font-semibold flex items-center gap-1 transition"
+                  title="Permanently Delete Property Listing"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Delete Listing</span>
+                </button>
+              </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => {

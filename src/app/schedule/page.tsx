@@ -13,6 +13,7 @@ import {
   AlertCircle,
   Phone,
   Eye,
+  Trash2,
 } from "lucide-react";
 import { formatDateTime, formatDate } from "@/lib/utils";
 import { useCRM } from "@/components/AppShell";
@@ -52,6 +53,23 @@ export default function SchedulePage() {
         body: JSON.stringify({ status: newStatus }),
       });
       triggerRefresh();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function deleteShowing(id: string) {
+    if (!confirm("Are you sure you want to permanently delete this scheduled tour / site visit?")) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/showings/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setShowings((prev) => prev.filter((s) => s.id !== id));
+        triggerRefresh();
+      }
     } catch (e) {
       console.error(e);
     }
@@ -236,6 +254,14 @@ export default function SchedulePage() {
                         Cancel
                       </button>
                     )}
+
+                    <button
+                      onClick={() => deleteShowing(showing.id)}
+                      className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition"
+                      title="Permanently Delete Tour Event"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
               </div>
